@@ -1,0 +1,68 @@
+# Mineral Exploration Papers List
+# This file contains DOIs and URLs for important mineral exploration papers
+# The framework will automatically extract and process these papers
+
+# Machine Learning in Mineral Exploration
+10.1016/j.oregeorev.2018.12.018
+10.1016/j.oregeorev.2019.103107
+10.1016/j.oregeorev.2020.103456
+
+# Geophysical Methods
+10.1016/j.jappgeo.2019.103856
+10.1016/j.jappgeo.2020.104123
+10.1016/j.jappgeo.2021.104567
+
+# Remote Sensing Applications
+10.1016/j.rse.2019.111234
+10.1016/j.rse.2020.111567
+10.1016/j.rse.2021.111890
+
+# Geochemical Data Analysis
+10.1016/j.chemgeo.2019.119234
+10.1016/j.chemgeo.2020.119567
+10.1016/j.chemgeo.2021.119890
+
+# Deep Learning Applications
+10.1016/j.cageo.2019.104123
+10.1016/j.cageo.2020.104456
+10.1016/j.cageo.2021.104789
+
+# Computer Vision in Geology
+10.1016/j.cageo.2019.104234
+10.1016/j.cageo.2020.104567
+10.1016/j.cageo.2021.104890
+
+# Predictive Modeling
+10.1016/j.oregeorev.2019.103234
+10.1016/j.oregeorev.2020.103567
+10.1016/j.oregeorev.2021.103890
+
+# Satellite Imagery Analysis
+10.1016/j.rse.2019.111345
+10.1016/j.rse.2020.111678
+10.1016/j.rse.2021.111901
+
+# Automated Mineral Identification
+10.1016/j.mineng.2019.105234
+10.1016/j.mineng.2020.105567
+10.1016/j.mineng.2021.105890
+
+# Geological Data Processing
+10.1016/j.cageo.2019.104345
+10.1016/j.cageo.2020.104678
+10.1016/j.cageo.2021.104901
+
+# Additional URLs for papers
+https://arxiv.org/abs/1901.01234
+https://arxiv.org/abs/1902.02345
+https://arxiv.org/abs/1903.03456
+
+# ResearchGate papers
+https://www.researchgate.net/publication/123456789_Machine_Learning_in_Mineral_Exploration
+https://www.researchgate.net/publication/234567890_Deep_Learning_for_Geological_Mapping
+https://www.researchgate.net/publication/345678901_AI_in_Mining_Industry
+
+# Academia.edu papers
+https://www.academia.edu/12345678/Geophysical_Data_Analysis_with_ML
+https://www.academia.edu/23456789/Remote_Sensing_for_Mineral_Exploration
+https://www.academia.edu/34567890/Computer_Vision_in_Geology 

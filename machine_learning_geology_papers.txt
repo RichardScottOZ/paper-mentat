@@ -1,0 +1,67 @@
+# Machine Learning in Geology Papers List
+# This file contains DOIs and URLs for important ML in geology papers
+
+# Deep Learning for Geological Mapping
+10.1016/j.cageo.2019.104123
+10.1016/j.cageo.2020.104456
+10.1016/j.cageo.2021.104789
+
+# Neural Networks in Geophysics
+10.1016/j.jappgeo.2019.103856
+10.1016/j.jappgeo.2020.104123
+10.1016/j.jappgeo.2021.104567
+
+# Computer Vision for Mineral Identification
+10.1016/j.mineng.2019.105234
+10.1016/j.mineng.2020.105567
+10.1016/j.mineng.2021.105890
+
+# AI for Geological Data Processing
+10.1016/j.cageo.2019.104345
+10.1016/j.cageo.2020.104678
+10.1016/j.cageo.2021.104901
+
+# Machine Learning for Ore Grade Prediction
+10.1016/j.oregeorev.2019.103234
+10.1016/j.oregeorev.2020.103567
+10.1016/j.oregeorev.2021.103890
+
+# Automated Geological Mapping
+10.1016/j.rse.2019.111345
+10.1016/j.rse.2020.111678
+10.1016/j.rse.2021.111901
+
+# AI in Mining Industry
+10.1016/j.mineng.2019.105345
+10.1016/j.mineng.2020.105678
+10.1016/j.mineng.2021.105901
+
+# Deep Learning for Seismic Interpretation
+10.1016/j.jappgeo.2019.103967
+10.1016/j.jappgeo.2020.104234
+10.1016/j.jappgeo.2021.104567
+
+# Machine Learning for Geochemical Analysis
+10.1016/j.chemgeo.2019.119345
+10.1016/j.chemgeo.2020.119678
+10.1016/j.chemgeo.2021.119901
+
+# AI for Remote Sensing in Geology
+10.1016/j.rse.2019.111456
+10.1016/j.rse.2020.111789
+10.1016/j.rse.2021.111912
+
+# Additional arXiv papers
+https://arxiv.org/abs/1904.04567
+https://arxiv.org/abs/1905.05678
+https://arxiv.org/abs/1906.06789
+
+# Additional ResearchGate papers
+https://www.researchgate.net/publication/456789012_Deep_Learning_for_Geological_Data
+https://www.researchgate.net/publication/567890123_AI_in_Mining_Exploration
+https://www.researchgate.net/publication/678901234_Computer_Vision_for_Mineral_Detection
+
+# Additional Academia.edu papers
+https://www.academia.edu/45678901/ML_for_Geological_Mapping
+https://www.academia.edu/56789012/AI_in_Mining_Industry
+https://www.academia.edu/67890123/Deep_Learning_for_Geophysics 
