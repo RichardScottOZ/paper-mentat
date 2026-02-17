@@ -20,12 +20,18 @@ save_pdfs: true
 
 # Topics for automated search
 topics_of_interest:
+  # Broad domain
   - "machine learning mineral exploration"
-  - "deep learning geology"
-  - "geophysics remote sensing"
-  - "geochemistry data analysis"
-  - "computer vision geological mapping"
-  - "predictive modeling ore deposits"
+  - "deep learning geoscience"
+  - "artificial intelligence mining"
+  # Technique + application
+  - "prospectivity mapping"
+  - "NLP mineral exploration"
+  - "transformer model geoscience"
+  # Emerging/niche
+  - "foundation model geoscience"
+  - "large language model geology"
+  - "LLM mineral exploration"
 
 # Paper list files to process
 paper_lists:
