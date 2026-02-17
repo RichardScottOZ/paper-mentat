@@ -42,6 +42,8 @@ class AcademicPaperFramework:
             with open(config_path) as f:
                 self.config.update(yaml.safe_load(f) or {})
         self.api = ScholarlyAPIClient(self.config)
+        self.seen_file = Path(self.config.get("output_dir", "results")) / ".seen_papers.json"
+        self.seen_keys = self._load_seen()
         self.llm_client = None
         if self.config.get("enable_llm_enhancement"):
             self._setup_llm()
@@ -57,6 +59,27 @@ class AcademicPaperFramework:
                 self.llm_client = OpenAIClient(self.config)
         except Exception as e:
             logger.warning(f"LLM setup failed: {e}")
+
+    def _load_seen(self) -> set:
+        if self.seen_file.exists():
+            try:
+                return set(json.loads(self.seen_file.read_text()))
+            except (json.JSONDecodeError, OSError):
+                pass
+        return set()
+
+    def _save_seen(self):
+        self.seen_file.parent.mkdir(parents=True, exist_ok=True)
+        self.seen_file.write_text(json.dumps(sorted(self.seen_keys)))
+
+    def _make_key(self, meta: PaperMetadata) -> str:
+        return meta.doi or meta.arxiv_id or meta.title.lower().strip()
+
+    def _is_new(self, meta: PaperMetadata) -> bool:
+        return self._make_key(meta) not in self.seen_keys
+
+    def _mark_seen(self, meta: PaperMetadata):
+        self.seen_keys.add(self._make_key(meta))
 
     # ── Search methods ────────────────────────────────────────────────
 
@@ -128,6 +151,19 @@ class AcademicPaperFramework:
             ))
 
         return results[:max_results]
+
+    def filter_new(self, results: List[ProcessingResult]) -> List[ProcessingResult]:
+        """Filter to only papers not seen in previous runs."""
+        new = [r for r in results if r.metadata and self._is_new(r.metadata)]
+        logger.info(f"Filtered {len(results)} -> {len(new)} new papers")
+        return new
+
+    def mark_results_seen(self, results: List[ProcessingResult]):
+        """Mark results as seen and persist to disk."""
+        for r in results:
+            if r.metadata:
+                self._mark_seen(r.metadata)
+        self._save_seen()
 
     def search_by_topics(self, topics: List[str], max_results_per_topic: int = 20) -> List[ProcessingResult]:
         all_results: List[ProcessingResult] = []

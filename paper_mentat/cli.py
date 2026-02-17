@@ -30,6 +30,7 @@ def main():
     parser.add_argument("--max-results", type=int, default=50, help="Max results (default: 50)")
     parser.add_argument("--output", help="Output JSON filename")
     parser.add_argument("--download-pdfs", action="store_true", help="Download OA PDFs")
+    parser.add_argument("--new-only", action="store_true", help="Only show papers not seen in previous runs")
     parser.add_argument("--report-only", action="store_true", help="Print report only, don't save JSON")
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose logging")
 
@@ -89,6 +90,15 @@ def main():
         print("❌ No results found.")
         sys.exit(1)
 
+    # Filter to new only
+    if args.new_only:
+        all_count = len(results)
+        results = framework.filter_new(results)
+        print(f"📌 {len(results)} new papers (filtered from {all_count})")
+        if not results:
+            print("No new papers since last run.")
+            sys.exit(0)
+
     # Report
     print(f"\n✅ Found {len(results)} papers\n")
     print(framework.generate_report(results))
@@ -102,6 +112,9 @@ def main():
     if not args.report_only:
         out = framework.save_results(results, args.output)
         print(f"\n💾 Results saved to: {out}")
+
+    # Mark as seen for future --new-only runs
+    framework.mark_results_seen(results)
 
     # Sample output
     print("\n📋 Sample Results:")
