@@ -114,7 +114,7 @@ def main():
         print(f"\n💾 Results saved to: {out}")
 
     # Mark as seen for future --new-only runs
-    framework.mark_results_seen(results)
+    framework.mark_results_seen(results, downloaded_only=args.download_pdfs)
 
     # Sample output
     print("\n📋 Sample Results:")

@@ -71,6 +71,10 @@ class ScholarlyAPIClient:
         """Convert a Crossref work item to PaperMetadata."""
         title_list = item.get("title", [])
         title = title_list[0] if title_list else "Unknown"
+        # Skip non-article types (figures, components, etc.)
+        doi = item.get("DOI", "")
+        if re.search(r"/fig-\d+|/table-\d+|/supp-\d+", doi):
+            return None
         authors = []
         for a in item.get("author", []):
             name = f"{a.get('given', '')} {a.get('family', '')}".strip()
@@ -251,6 +255,9 @@ class ScholarlyAPIClient:
         if not api_key:
             logger.warning("core_api_key not set in config, skipping CORE search")
             return []
+        # Wrap multi-word queries in quotes with proximity slop for phrase-like matching
+        if " " in query and not (query.startswith('"') or ":" in query):
+            query = f'"{query}"~10'  # words within 10 positions of each other
         params = {"q": query, "limit": min(max_results, 100), "sort": "relevance"}
         self._throttle()
         try:

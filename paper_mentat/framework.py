@@ -121,6 +121,8 @@ class AcademicPaperFramework:
         # Crossref
         for item in self.api.crossref_search(plain_query, per_source):
             meta = ScholarlyAPIClient.crossref_to_metadata(item)
+            if not meta:
+                continue
             if meta.doi and meta.doi in seen_keys:
                 continue
             if meta.doi:
@@ -158,11 +160,15 @@ class AcademicPaperFramework:
         logger.info(f"Filtered {len(results)} -> {len(new)} new papers")
         return new
 
-    def mark_results_seen(self, results: List[ProcessingResult]):
+    def mark_results_seen(self, results: List[ProcessingResult], downloaded_only: bool = False):
         """Mark results as seen and persist to disk."""
         for r in results:
             if r.metadata:
-                self._mark_seen(r.metadata)
+                key = self._make_key(r.metadata)
+                if downloaded_only and hasattr(self, "_downloaded_keys"):
+                    if key not in self._downloaded_keys:
+                        continue
+                self.seen_keys.add(key)
         self._save_seen()
 
     def search_by_topics(self, topics: List[str], max_results_per_topic: int = 20) -> List[ProcessingResult]:
@@ -287,10 +293,19 @@ class AcademicPaperFramework:
         output_dir = Path(self.config["output_dir"])
         output_dir.mkdir(parents=True, exist_ok=True)
         count = 0
+        self._downloaded_keys = set()
         for r in results:
             if not r.metadata or not r.metadata.oa_url:
                 continue
             url = r.metadata.oa_url
+            # Normalise arXiv URLs to PDF
+            if "arxiv.org/abs/" in url:
+                url = url.replace("/abs/", "/pdf/")
+            # MDPI: strip query params and ensure /pdf suffix
+            if "mdpi.com" in url and "/pdf" in url:
+                url = url.split("?")[0]  # remove version params
+                if not url.endswith("/pdf"):
+                    url = url.rstrip("/") + "/pdf"
             safe_name = re.sub(r"[^\w\s-]", "", r.metadata.title or "paper")[:80].strip()
             filename = f"{safe_name}.pdf"
             filepath = output_dir / filename
@@ -298,14 +313,30 @@ class AcademicPaperFramework:
                 count += 1
                 continue
             try:
-                resp = self.api.session.get(url, timeout=self.config["timeout"], stream=True)
+                # MDPI needs a real browser User-Agent
+                headers = {}
+                if "mdpi.com" in url:
+                    headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                resp = self.api.session.get(url, timeout=self.config["timeout"], stream=True, allow_redirects=True, headers=headers)
                 content_type = resp.headers.get("content-type", "")
-                if resp.status_code == 200 and ("pdf" in content_type or url.endswith(".pdf") or "arxiv.org/pdf" in url):
+                final_url = resp.url  # after redirects
+                is_pdf = (
+                    "pdf" in content_type
+                    or final_url.endswith(".pdf")
+                    or "arxiv.org/pdf" in final_url
+                    or "/pdf" in final_url and "mdpi.com" in final_url
+                )
+                # Skip landing pages
+                if not is_pdf and "text/html" in content_type:
+                    logger.warning(f"Skipping landing page: {url}")
+                    continue
+                if resp.status_code == 200 and is_pdf:
                     with open(filepath, "wb") as f:
                         for chunk in resp.iter_content(8192):
                             f.write(chunk)
                     logger.info(f"Downloaded: {filepath}")
                     count += 1
+                    self._downloaded_keys.add(self._make_key(r.metadata))
                 else:
                     logger.warning(f"Not a PDF response for {url} (content-type: {content_type})")
             except Exception as e:
