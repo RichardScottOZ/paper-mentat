@@ -1,50 +1,39 @@
 # Academic Paper Search Framework Configuration
-# This file configures the framework for searching academic papers
 
-# Basic settings
+# Your email - REQUIRED for Unpaywall and polite API access
+contact_email: "<email>"
+
+# SSL - set to false if behind a corporate proxy
+ssl_verify: false
+
+# Rate limiting
 rate_limit_per_second: 1
-max_retries: 3
 timeout: 30
-user_agent: 'AcademicPaperFramework/1.0 (research-agent)'
+user_agent: "paper-mentat/0.1.0 (research-agent)"
 
-# Output settings
-output_dir: 'results'
+# Output
+output_dir: "results"
 save_pdfs: true
 
-# Topics of interest for mineral exploration and machine learning
+# Topics for automated search
 topics_of_interest:
   - "machine learning mineral exploration"
+  - "deep learning geology"
   - "geophysics remote sensing"
   - "geochemistry data analysis"
-  - "deep learning geology"
-  - "artificial intelligence mining"
   - "computer vision geological mapping"
   - "predictive modeling ore deposits"
-  - "satellite imagery mineral detection"
-  - "geological data processing"
-  - "automated mineral identification"
 
-# Paper lists to process (paths to files containing paper URLs/DOIs)
+# Paper list files to process
 paper_lists:
   - "mineral_exploration_papers.txt"
   - "machine_learning_geology_papers.txt"
 
-# LLM Enhancement Settings
-enable_llm_enhancement: true
-llm_provider: 'ollama'  # 'ollama' or 'openai'
-
-# Ollama Settings (for local LLM processing)
-ollama_base_url: 'http://localhost:11434'
-ollama_model: 'llama2'  # or 'llama2:13b', 'codellama', 'mistral', etc.
-ollama_timeout: 30
-
-# OpenAI Settings (alternative to Ollama)
-# openai_api_key: "your-openai-api-key"
+# LLM Enhancement (optional)
+enable_llm_enhancement: false
+llm_provider: "ollama"  # "ollama" or "openai"
+ollama_base_url: "http://localhost:11434"
+ollama_model: "llama2"
+ollama_timeout: 60
+# openai_api_key: ""
 # openai_model: "gpt-4"
-
-# API settings (optional - for enhanced functionality)
-# unpaywall_email: "your-email@example.com"
-# crossref_email: "your-email@example.com"
-
-# Advanced settings
-# enable_browser_automation: false 
