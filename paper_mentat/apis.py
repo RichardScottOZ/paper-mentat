@@ -243,6 +243,45 @@ class ScholarlyAPIClient:
             ))
         return results
 
+    # ── CORE.ac.uk ─────────────────────────────────────────────────────
+
+    def core_search(self, query: str, max_results: int = 20) -> List[PaperMetadata]:
+        """Search CORE.ac.uk full text index. Requires core_api_key in config."""
+        api_key = self.config.get("core_api_key")
+        if not api_key:
+            logger.warning("core_api_key not set in config, skipping CORE search")
+            return []
+        params = {"q": query, "limit": min(max_results, 100), "sort": "relevance"}
+        self._throttle()
+        try:
+            resp = self.session.get(
+                "https://api.core.ac.uk/v3/search/works",
+                params=params,
+                headers={"Authorization": f"Bearer {api_key}"},
+                timeout=self.timeout,
+            )
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            logger.warning(f"CORE search failed: {e}")
+            return []
+        data = resp.json()
+        results = []
+        for item in data.get("results", []):
+            dl_url = item.get("downloadUrl") or item.get("sourceFulltextUrls")
+            if isinstance(dl_url, list):
+                dl_url = dl_url[0] if dl_url else None
+            results.append(PaperMetadata(
+                title=item.get("title", "Unknown"),
+                authors=[a.get("name", "") for a in item.get("authors", []) if isinstance(a, dict)],
+                doi=item.get("doi"),
+                publication_year=item.get("yearPublished"),
+                journal=item.get("publisher"),
+                abstract=item.get("abstract"),
+                oa_status=OAColor.GREEN if dl_url else None,
+                oa_url=dl_url,
+            ))
+        return results
+
     # ── PubMed Central ────────────────────────────────────────────────
 
     def pmc_search(self, query: str, max_results: int = 20) -> List[str]:

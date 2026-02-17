@@ -1,10 +1,13 @@
 # Academic Paper Search Framework Configuration
 
 # Your email - REQUIRED for Unpaywall and polite API access
-contact_email: "<email>"
+contact_email: ""
 
 # SSL - set to false if behind a corporate proxy
 ssl_verify: false
+
+# CORE.ac.uk API key (register at https://core.ac.uk/services/api)
+core_api_key: ""
 
 # Rate limiting
 rate_limit_per_second: 1

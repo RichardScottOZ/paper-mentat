@@ -65,10 +65,26 @@ class AcademicPaperFramework:
         logger.info(f"Ad-hoc search: {query}")
         results: List[ProcessingResult] = []
         seen_keys: set = set()
-        per_source = max(max_results // 3, 5)
+        per_source = max(max_results // 4, 5)
+
+        # Clean query for APIs that don't support CORE/Elasticsearch syntax
+        plain_query = re.sub(r"(title|fullText|authors|doi|year):\(([^)]+)\)", r"\2", query)
+        plain_query = re.sub(r"\b(AND|OR|NOT)\b", " ", plain_query).strip()
+
+        # CORE.ac.uk - full text search, all OA
+        for meta in self.api.core_search(query, per_source):
+            key = meta.doi or meta.title
+            if key in seen_keys:
+                continue
+            seen_keys.add(key)
+            results.append(ProcessingResult(
+                url=meta.oa_url or (f"https://doi.org/{meta.doi}" if meta.doi else ""),
+                state=ProcessingState.COMPLETED if meta.oa_url else ProcessingState.METADATA_EXTRACTED,
+                metadata=meta,
+            ))
 
         # arXiv - returns full metadata directly
-        for meta in self.api.arxiv_search(query, per_source):
+        for meta in self.api.arxiv_search(plain_query, per_source):
             key = meta.arxiv_id or meta.title
             if key in seen_keys:
                 continue
@@ -80,7 +96,7 @@ class AcademicPaperFramework:
             ))
 
         # Crossref
-        for item in self.api.crossref_search(query, per_source):
+        for item in self.api.crossref_search(plain_query, per_source):
             meta = ScholarlyAPIClient.crossref_to_metadata(item)
             if meta.doi and meta.doi in seen_keys:
                 continue
@@ -96,7 +112,7 @@ class AcademicPaperFramework:
             ))
 
         # OpenAlex
-        for item in self.api.openalex_search(query, per_source):
+        for item in self.api.openalex_search(plain_query, per_source):
             meta = ScholarlyAPIClient.openalex_to_metadata(item)
             key = meta.doi or meta.title
             if key in seen_keys:
